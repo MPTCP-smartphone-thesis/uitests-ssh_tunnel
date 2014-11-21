@@ -11,10 +11,8 @@ public class LaunchSettings extends UiAutomatorTestCase {
 	private static final String ID_TUNNEL_SWITCH = "android:id/checkbox";
 	private static final String ID_CONNECTING = "android:id/message";
 
-	protected void start_proxy() throws UiObjectNotFoundException {
-		// Get button
-		UiObject button = Utils.getObjectWithId(ID_TUNNEL_SWITCH);
-
+	protected void start_proxy(UiObject button)
+			throws UiObjectNotFoundException {
 		// already started?
 		if (button.isChecked()) {
 			button.click(); // stop
@@ -35,13 +33,26 @@ public class LaunchSettings extends UiAutomatorTestCase {
 		}
 	}
 
+	protected void stop_proxy(UiObject button) throws UiObjectNotFoundException {
+		if (button.isChecked()) {
+			button.click(); // stop
+			sleep(1000);
+		}
+	}
+
 	public void testDemo() throws UiObjectNotFoundException {
 		assertTrue("OOOOOpps",
 				Utils.openApp(this, "SSHTunnel", "org.sshtunnel"));
 		sleep(1000);
 
-		start_proxy();
-		System.out.println("end");
+		// Get button
+		UiObject button = Utils.getObjectWithId(ID_TUNNEL_SWITCH);
+
+		String action = getParams().getString("action"); // default: start
+		if (action == null || !action.equals("stop"))
+			start_proxy(button);
+		else
+			stop_proxy(button);
 	}
 }
 
