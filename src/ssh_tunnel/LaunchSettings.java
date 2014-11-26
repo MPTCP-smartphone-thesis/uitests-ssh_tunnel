@@ -11,7 +11,13 @@ public class LaunchSettings extends UiAutomatorTestCase {
 	private static final String ID_TUNNEL_SWITCH = "android:id/checkbox";
 	private static final String ID_CONNECTING = "android:id/message";
 
-	protected void start_proxy(UiObject button)
+	/**
+	 * Start proxy, restart it if already enabled
+	 * @param button: checkbox to enable the proxy
+	 * @return true if ok
+	 * @throws UiObjectNotFoundException
+	 */
+	protected boolean start_proxy(UiObject button)
 			throws UiObjectNotFoundException {
 		// already started?
 		if (button.isChecked()) {
@@ -28,9 +34,10 @@ public class LaunchSettings extends UiAutomatorTestCase {
 				System.out.println("Still connecting");
 				sleep(500);
 			}
-			else
-				return; // not object or another message, ok, we're connected.
+			else // no object or another message, ok, we're connected.
+				return button.isChecked();
 		}
+		return false;
 	}
 
 	protected void stop_proxy(UiObject button) throws UiObjectNotFoundException {
@@ -50,7 +57,7 @@ public class LaunchSettings extends UiAutomatorTestCase {
 
 		String action = getParams().getString("action"); // default: start
 		if (action == null || !action.equals("stop"))
-			start_proxy(button);
+			assertTrue("Not able to (re)start the proxy", start_proxy(button));
 		else
 			stop_proxy(button);
 	}
