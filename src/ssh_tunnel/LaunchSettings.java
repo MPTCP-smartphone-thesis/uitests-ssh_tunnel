@@ -27,14 +27,14 @@ public class LaunchSettings extends UiAutomatorTestCase {
 		button.click(); // just start
 		sleep(500);
 
-		// Wait for connection, max 10 sec
-		for (int i = 0; i < 20; i++) {
+		// Wait for connection, max 20 sec
+		for (int i = 0; i < 40; i++) {
 			if (Utils.hasObject(ID_CONNECTING)
 					&& Utils.hasText(ID_CONNECTING, "Connecting")) {
 				System.out.println("Still connecting");
 				sleep(500);
 			}
-			else // no object or another message, ok, we're connected.
+			else // no object or another message, ok, we're connected if checked
 				return button.isChecked();
 		}
 		return false;
@@ -62,4 +62,3 @@ public class LaunchSettings extends UiAutomatorTestCase {
 			stop_proxy(button);
 	}
 }
-
