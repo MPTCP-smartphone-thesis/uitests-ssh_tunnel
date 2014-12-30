@@ -2,11 +2,8 @@ package ssh_tunnel;
 
 import utils.Utils;
 
-import com.android.uiautomator.core.UiCollection;
 import com.android.uiautomator.core.UiObject;
 import com.android.uiautomator.core.UiObjectNotFoundException;
-import com.android.uiautomator.core.UiScrollable;
-import com.android.uiautomator.core.UiSelector;
 import com.android.uiautomator.testrunner.UiAutomatorTestCase;
 
 public class LaunchSettings extends UiAutomatorTestCase {
@@ -15,9 +12,6 @@ public class LaunchSettings extends UiAutomatorTestCase {
 	private static final String ID_CONNECTING = "android:id/message";
 	private static final String TEXT_CONNECTING = "Connecting";
 	private static final String ID_LISTVIEW = "android:id/list";
-	private static final String ID_LIST_ELEM_TITLE = "android:id/title";
-	private static final String CLASS_LINEAR_LAYOUT = android.widget.LinearLayout.class
-			.getName();
 	private static final String TEXT_AUTO_CONNECT = "Auto Connect";
 
 	/**
@@ -47,38 +41,21 @@ public class LaunchSettings extends UiAutomatorTestCase {
 		}
 	}
 
-	private void autoConnect(boolean enable) throws UiObjectNotFoundException {
-		// Scroll the view until finding our file
-		boolean found = false;
-		UiScrollable list = Utils.getScrollableWithId(ID_LISTVIEW);
-		list.setAsVerticalList();
+	private void autoConnect(UiObject button, boolean enable)
+			throws UiObjectNotFoundException {
+		boolean running = button.isChecked();
+		if (running) // cannot change options if enable...
+			stopProxy(button);
 
-		while (!found) {
-			UiCollection listView = new UiCollection(
-					new UiSelector().resourceId(ID_LISTVIEW));
-			int count = listView.getChildCount(new UiSelector()
-					.className(CLASS_LINEAR_LAYOUT));
-			for (int i = 0; i < count; i++) {
-				UiObject linearLayout = listView.getChild(new UiSelector()
-						.className(CLASS_LINEAR_LAYOUT).instance(i));
-				UiObject title = linearLayout.getChild(new UiSelector()
-						.resourceId(ID_LIST_ELEM_TITLE));
-				if (title.exists() && title.getText().equals(TEXT_AUTO_CONNECT)) {
-					UiObject checkBox = linearLayout.getChild(new UiSelector()
-							.resourceId(ID_TUNNEL_SWITCH));
-					if ((enable && !checkBox.isChecked())
-							|| (!enable && checkBox.isChecked()))
-						assertTrue("Unable to select element",
-								Utils.click(checkBox));
-					found = true;
-					break;
-				}
-			}
+		System.out.println("AutoConnect " + enable);
+		UiObject checkBox = Utils.findCheckBoxInListWithTitle(ID_LISTVIEW,
+				TEXT_AUTO_CONNECT);
+		assertTrue("Unable to find element", checkBox != null);
+		Utils.checkBox(checkBox, enable);
 
-			if (!found) {
-				assertTrue("Didn't find the requested object...",
-						Utils.scrollForward(list));
-			}
+		if (running) { // restart proxy
+			Utils.listMoveUp(ID_LISTVIEW);
+			startProxy(button);
 		}
 	}
 
