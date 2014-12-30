@@ -13,6 +13,7 @@ public class LaunchSettings extends UiAutomatorTestCase {
 
 	private static final String ID_TUNNEL_SWITCH = "android:id/checkbox";
 	private static final String ID_CONNECTING = "android:id/message";
+	private static final String TEXT_CONNECTING = "Connecting";
 	private static final String ID_LISTVIEW = "android:id/list";
 	private static final String ID_LIST_ELEM_TITLE = "android:id/title";
 	private static final String CLASS_LINEAR_LAYOUT = android.widget.LinearLayout.class
@@ -27,28 +28,19 @@ public class LaunchSettings extends UiAutomatorTestCase {
 	 */
 	protected boolean startProxy(UiObject button)
 			throws UiObjectNotFoundException {
+		System.out.println("Start Proxy");
 		// already started?
 		if (button.isChecked()) {
 			button.click(); // stop
 			sleep(1000);
 		}
-		button.click(); // just start
-		sleep(500);
 
-		// Wait for connection, max 20 sec
-		for (int i = 0; i < 40; i++) {
-			if (Utils.hasObject(ID_CONNECTING)
-					&& Utils.hasText(ID_CONNECTING, "Connecting")) {
-				System.out.println("Still connecting");
-				sleep(500);
-			}
-			else // no object or another message, ok, we're connected if checked
-				return button.isChecked();
-		}
-		return false;
+		return Utils.clickAndWaitLoadingWindow(this, button, ID_CONNECTING,
+				TEXT_CONNECTING, true);
 	}
 
 	protected void stopProxy(UiObject button) throws UiObjectNotFoundException {
+		System.out.println("Stop Proxy");
 		if (button.isChecked()) {
 			button.click(); // stop
 			sleep(1000);
