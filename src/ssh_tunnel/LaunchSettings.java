@@ -108,6 +108,13 @@ public class LaunchSettings extends UiAutomatorTestCase {
 			autoConnect(true);
 		else if (action.equalsIgnoreCase("notautoconnect"))
 			autoConnect(false);
+		else if (action.equalsIgnoreCase("stopnotautoconnect")) {
+			stopProxy(button);
+			autoConnect(false);
+		} else if (action.equalsIgnoreCase("startautoconnect")) {
+			startProxy(button);
+			autoConnect(true);
+		}
 		else
 			assertTrue("Not able to (re)start the proxy", startProxy(button));
 	}
