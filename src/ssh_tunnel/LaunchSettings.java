@@ -92,8 +92,9 @@ public class LaunchSettings extends UiAutomatorTestCase {
 
 	public void testDemo() throws UiObjectNotFoundException {
 		assertTrue("OOOOOpps",
-				Utils.openApp(this, "SSHTunnel", "org.sshtunnel"));
+				Utils.openApp(this, "SSHTunnel", "org.sshtunnel", false));
 		sleep(1000);
+		Utils.listMoveUp(ID_LISTVIEW);
 
 		// Get button
 		UiObject button = Utils.getObjectWithId(ID_TUNNEL_SWITCH);
