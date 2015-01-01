@@ -61,7 +61,10 @@ public class LaunchSettings extends UiAutomatorTestCase {
 
 	public void testDemo() throws UiObjectNotFoundException {
 		assertTrue("OOOOOpps",
-				Utils.openApp(this, "SSHTunnel", "org.sshtunnel", false));
+				Utils.openApp(this, "SSHTunnel",
+						"org.sshtunnel",
+						"org.sshtunnel.SSHTunnel",
+						false)); // do not kill: iptables could be altered
 		sleep(1000);
 		Utils.listMoveUp(ID_LISTVIEW);
 
