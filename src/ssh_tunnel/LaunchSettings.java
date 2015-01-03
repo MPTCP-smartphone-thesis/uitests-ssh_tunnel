@@ -49,7 +49,7 @@ public class LaunchSettings extends UiAutomatorTestCase {
 
 		System.out.println("AutoConnect " + enable);
 		UiObject checkBox = Utils.findCheckBoxInListWithTitle(ID_LISTVIEW,
-				TEXT_AUTO_CONNECT);
+				TEXT_AUTO_CONNECT, null);
 		assertTrue("Unable to find element", checkBox != null);
 		Utils.checkBox(checkBox, enable);
 
